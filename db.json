@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "username": "123",
+      "email": "congaanvocam0@gmail.com",
+      "password": "123",
+      "cart": [],
+      "id": 1
+    },
+    {
+      "username": "12345",
+      "email": "hieuyeuhao@gmail.com",
+      "password": "Q12345",
+      "cart": [],
+      "id": 2
+    }
+  ]
+}
