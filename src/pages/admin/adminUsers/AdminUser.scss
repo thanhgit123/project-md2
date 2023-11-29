@@ -1,0 +1,23 @@
+.tableContainer{
+    padding-left: 350px;
+    padding-right: 200px;
+    margin-top: 50px;
+    text-align: center;
+    .tableUser{
+        border: 1px solid black;
+        width: 100%;
+        .trUser{
+            border: 1px solid black;
+           th{
+            border: 1px solid black;
+            height: 50px;
+           }
+        }           
+        td{
+            border: 1px solid black;            
+            height: 50px;
+           }
+    }
+    
+}
+

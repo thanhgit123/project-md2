@@ -1,26 +1,23 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { HiArrowNarrowRight } from "react-icons/hi";
+import { Pagination } from "antd";
 import { success } from "../../utils/notify";
 import { BiSearch } from "react-icons/bi";
 import Button from "@mui/material/Button";
-import { Pagination } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Product() {
-  const { id } = useParams();
+export default function ListProduct() {
   const [listProducts, setlistProducts] = useState([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleGetData = async () => {
-    const response = await axios.get(
-      `http://localhost:8099/listProduct?category=${id}`
-    );
+    const response = await axios.get("http://localhost:8099/listProduct");
     setlistProducts(response.data);
   };
+
   useEffect(() => {
     handleGetData();
-  }, [id]);
+  }, []);
 
   // chuyen doi tien te
   const VND = new Intl.NumberFormat("vi-VN", {
@@ -28,7 +25,6 @@ export default function Product() {
     currency: "VND",
   });
 
-  // them vao gio hang
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [cart, setCart] = useState(currentUser?.cart);
 
@@ -54,7 +50,8 @@ export default function Product() {
       JSON.stringify({ ...currentUser, cart })
     );
   }, [cart]);
-  // searh & pagenation
+
+  // serach
   const [searchProduct, setSearchProduct] = useState([]);
   const handleSearch = (e) => {
     setSearchProduct(e.target.value.toLowerCase());
@@ -74,24 +71,17 @@ export default function Product() {
     setCurrentPage(page);
   };
 
-
-  const handleGoToDetail = (id) => {
+  const handleClickProduct = (id) => {
     localStorage.setItem("idProduct", JSON.stringify(id));
     navigate("/productDetail");
   };
+
   return (
     <>
       <div className="h-[400px] bg-[url('assets/image/sanpham.png')]"></div>
       <br />
-
-      <div className=" flex items-center  ">
-        <Link
-          to="/listProduct"
-          className="pl-10 text-2xl text-rose-500 flex w-[340px]  "
-        >
-          Xem tất cả sản phẩm <HiArrowNarrowRight className="mt-1 ml-1" />
-        </Link>
-        <div className="h-7 flex ml-[70px] ">
+      <div className=" flex items-center ml-[400px] ">
+        <div className="h-7 flex ">
           <input
             className="w-[700px] h-[30px] border-2 border-rose-300 rounded-sm m-auto"
             type="text"
@@ -103,25 +93,26 @@ export default function Product() {
             <BiSearch></BiSearch>
           </Button>
         </div>
+        <br />
       </div>
 
       <div className="grid grid-cols-4 gap-4 pl-10 mt-7">
         {displayedProducts
           .filter((item) => item.name.toLowerCase().includes(searchProduct))
-
           .map((item, index) => {
             return (
               <div
-                className="text-center w-[300px] border-2 border-purple-700 shadow-1xl shadow-zinc-400  h-[450px] flex flex-col items-center justify-evenly"
+                className="text-center w-[300px] border-2 border-purple-700 shadow-s   shadow-zinc-400  h-[450px] flex flex-col items-center justify-evenly"
                 key={index}
               >
-                 <div onClick={() => handleGoToDetail(item.id)}>
+                <div onClick={() => handleClickProduct(item.id)}>
                   <img
                     src={item.image}
                     alt=""
                     className="w-[200px] h-auto hover:h-200 transform hover:scale-110 transition-all duration-200"
                   />
                 </div>
+
                 <p className="text-3xl text-black">{item.category}</p>
                 <p className="text-2xl">{item.name}</p>
                 <p className="text-lg"> {VND.format(item.price)}</p>
@@ -135,6 +126,7 @@ export default function Product() {
             );
           })}
       </div>
+      <br />
       <br />
       <Pagination
         current={currentPage}

@@ -1,12 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-
-const productSlice = createSlice({
-    name:"product",
-    initalState:{
-        products:["ll"]
-    },
-    reducers:{},
-    extraReducers:()=>{
-        
-    }
-})
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import userSlice from "./reducer/userSlice";
+const rootReducer = combineReducers({
+  user: userSlice,
+});
+const store = configureStore({
+  reducer: rootReducer,
+});
+export default store;

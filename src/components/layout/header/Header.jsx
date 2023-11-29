@@ -5,6 +5,7 @@ import { SiNike, SiAdidas } from "react-icons/si";
 import { GiConverseShoe, GiBallerinaShoes } from "react-icons/gi";
 import Button from "@mui/material/Button";
 import yeah from "../../../assets/image/yeah.png";
+import { BsCartPlusFill } from "react-icons/bs";
 import {
   Bars3Icon,
   ChartPieIcon,
@@ -14,30 +15,31 @@ import {
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Link, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const products = [
   {
     name: "Giày Nike",
     description: "Cực Chất  :)))",
-    href: "#",
+    href: "/category/Nike",
     icon: SiNike,
   },
   {
     name: "Giày Convert",
     description: "Cực Dễ  Xỏ  :)))",
-    href: "#",
+    href: "/category/Convert",
     icon: GiConverseShoe,
   },
   {
     name: "Giày Adidas",
     description: "Cực Đắt :))) ",
-    href: "#",
+    href: "/category/Adidas",
     icon: SiAdidas,
   },
   {
     name: "Giày Vans",
     description: "Cực Cực  :)))",
-    href: "#",
+    href: "/category/Vans",
     icon: GiBallerinaShoes,
   },
 ];
@@ -47,10 +49,17 @@ function classNames(...classes) {
 }
 
 export default function Header() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const checkLogin = useSelector((state) => state.user.checkLogin);
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "/";
+  };
 
   return (
-    <header>
+    <header className="sticky top-0 z-[999] bg-white ">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
@@ -105,13 +114,13 @@ export default function Header() {
                         />
                       </div>
                       <div className="flex-auto">
-                        <a
-                          href={item.href}
+                        <Link
+                          to={item.href}
                           className="block font-semibold text-gray-900"
                         >
                           {item.name}
                           <span className="absolute inset-0" />
-                        </a>
+                        </Link>
                         <p className="mt-1 text-gray-600">{item.description}</p>
                       </div>
                     </div>
@@ -139,7 +148,7 @@ export default function Header() {
           >
             Liên Hệ
           </NavLink>
-          <a className=" w-20  h-7  flex">
+          {/* <a className=" w-20  h-7  flex">
             <input
               className="w-96 border-2 border-rose-300 rounded-sm"
               type="text"
@@ -149,15 +158,34 @@ export default function Header() {
             <Button variant="contained">
               <BiSearch></BiSearch>
             </Button>
-          </a>
+          </a> */}
         </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <NavLink
-            to="/loggin"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </NavLink>
+
+        <div className="hidden lg:flex lg:flex-1 ml-12 justify-around  ">
+          {checkLogin || currentUser?.id ? (
+            <Link to="/cart" className=" flex mt-1 ml-10">
+              {" "}
+              <BsCartPlusFill />
+            </Link>
+          ) : (
+            ""
+          )}
+
+          {checkLogin || currentUser?.id ? (
+            <div
+              className="cursor-pointer text-red-500  justify-around"
+              onClick={handleLogout}
+            >
+              Log Out
+            </div>
+          ) : (
+            <NavLink
+              to="/loggin"
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </NavLink>
+          )}
         </div>
       </nav>
       <Dialog
@@ -166,9 +194,9 @@ export default function Header() {
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
-        <div className="fixed inset-0 z-10" />
+        <div className="fixed inset-0 z-10  " />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pt-[90px]">
             <NavLink to="/" className="-m-1.5 p-1.5">
               <img className="h-8 w-auto" src={yeah} alt="" />
             </NavLink>

@@ -3,7 +3,10 @@ import "./Login.scss";
 import api from "../../service/apis/api.user";
 import { success, failed } from "../../utils/notify";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { checkLogin } from "../../store/reducer/userSlice";
 export default function Login() {
+  const dispatch = useDispatch();
   const [isLoginFormVisible, setLoginFormVisible] = useState(true);
   const handleLoginClick = () => {
     setLoginFormVisible(true);
@@ -11,7 +14,6 @@ export default function Login() {
   const handleSignupClick = () => {
     setLoginFormVisible(false);
   };
- 
 
   // register
   const [registerUser, setRegisterUser] = useState({
@@ -25,27 +27,27 @@ export default function Login() {
   };
 
   const handleRegister = async () => {
-      // validate
-      const regexName = /^.{4,}$/;
-      const regexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-      const regexPass = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+    // validate
+    const regexName = /^.{4,}$/;
+    const regexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const regexPass = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
 
-      if (
-        !registerUser.username ||
-        !registerUser.password ||
-        !registerUser.email 
+    if (
+      !registerUser.username ||
+      !registerUser.password ||
+      !registerUser.email
     ) {
-        failed("Không Được Để Trống");
-        return;
+      failed("Không Được Để Trống");
+      return;
     }
-      if (!regexName.test(registerUser.username)) {
-        failed("Tên phải có tối thiểu 5 ký tự");
-        return;
-      }
-      if (!regexPass.test(registerUser.password)) {
-        failed("Mật khẩu phải có chữ cái viết hoa và số ");
-        return
-      }
+    if (!regexName.test(registerUser.username)) {
+      failed("Tên phải có tối thiểu 5 ký tự");
+      return;
+    }
+    if (!regexPass.test(registerUser.password)) {
+      failed("Mật khẩu phải có chữ cái viết hoa và số ");
+      return;
+    }
 
     api.checkRegister(registerUser.email).then((res) => {
       if (res.data.length != 0) {
@@ -55,6 +57,8 @@ export default function Login() {
       api.register({
         ...registerUser,
         cart: [],
+        role:"user",
+        status:true
       });
       success("Đăng kí thành công");
       setRegisterUser({
@@ -63,41 +67,50 @@ export default function Login() {
         password: "",
       });
     });
-  
   };
 
   // login
-  const navigate = useNavigate()
-      const [loginUser,setLoginUser]= useState({
-        email:"",
-        password:"",
-      })
+  const navigate = useNavigate();
+  const [loginUser, setLoginUser] = useState({
+    email: "",
+    password: "",
+  });
 
-      const handleChange=(e)=>{
-        const {name,value} = e.target;
-        setLoginUser({
-          ...loginUser,[name]:value
-        })
-      }
-      const handleLogin= async()=>{
-   
-
-        if (
-          !loginUser.password ||
-          !loginUser.email 
-          ) {
-        failed("Không Được Để Trống");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginUser({
+      ...loginUser,
+      [name]: value,
+    });
+  };
+  const handleLogin = async () => {
+    if (!loginUser.password || !loginUser.email) {
+      failed("Không Được Để Trống");
+      return;
+    }
+    api.checkLogin(loginUser.email, loginUser.password).then((res) => {
+      if(!res.data[0].status){
+        failed("Tài khoản đã bị khóa");
         return;
-         }
-        api.checkLogin(loginUser.email,loginUser.password).then((res) => {
-          if (res.data.length != 0) {
-            success ("Đăng nhâp thành công");
-            navigate("/")
-          }else{
-             failed("Tài khoản không hợp lệ");
-          }   
-        });    
       }
+      if (res.data[0].role === "admin") {
+        localStorage.setItem("currentUser", JSON.stringify(res.data[0]))
+        navigate("/admin");
+        return
+      }
+      if (res.data.length != 0) {
+        success("Đăng nhâp thành công");
+        let currentUser = res.data[0];
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        dispatch(checkLogin());
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        failed("Tài khoản không hợp lệ");
+      }
+    });
+  };
 
   return (
     <>
@@ -168,7 +181,9 @@ export default function Login() {
                     name="password"
                   />
                 </div>
-                <button className="submit-btn" onClick={handleLogin} >Log in</button>
+                <button className="submit-btn" onClick={handleLogin}>
+                  Log in
+                </button>
               </div>
             </div>
           </div>
@@ -197,4 +212,3 @@ export default function Login() {
     </>
   );
 }
-

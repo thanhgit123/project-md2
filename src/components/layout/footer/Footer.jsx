@@ -12,7 +12,7 @@ import {
 
 export default function Footer() {
   return (
-    <MDBFooter className='bg-secondary text-white text-center'>
+    <MDBFooter className='bg-cyan-800 text-white text-center'>
       <MDBContainer className='p-4'>
         <MDBRow>
           <MDBCol lg="6" md="12" className='mb-4 mb-md-0 leading-10'>

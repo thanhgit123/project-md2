@@ -1,0 +1,42 @@
+// @import url(https://unpkg.com/@webpixels/css@1.1.5/dist/index.css); 
+@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.4.0/font/bootstrap-icons.min.css");
+.logo {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    font-size: 20px;
+    font-family: "Cardo", sans-serif;
+    color: #ffca42;
+}
+
+.title {
+    font-size: 1rem !important;
+}
+
+tr,
+th,
+td {
+    text-align: center;
+}
+
+#changePage {
+
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+#changePage span {
+    margin: 5px;
+
+}
+
+#b {
+    height: 80%;
+}
+
+#a {
+    height: 850px !important;
+}

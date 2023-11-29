@@ -17,4 +17,5 @@ export default {
     checkLogin : async (email,password)=>{
         return await axios.get(`http://localhost:8099/users?email=${email}&password=${password}`)
     }
+    
 }
